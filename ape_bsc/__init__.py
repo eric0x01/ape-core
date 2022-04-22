@@ -4,7 +4,7 @@ from ape.api.networks import LOCAL_NETWORK_NAME
 from ape_geth import GethProvider
 from ape_test import LocalProvider
 
-from .ecosystem import NETWORKS, BSC, BSCConfig
+from .ecosystem import BSC, NETWORKS, BSCConfig
 
 
 @plugins.register(plugins.Config)
