@@ -10,8 +10,8 @@ extras_require = {
         "hypothesis>=6.2.0,<7.0",  # Strategy-based fuzzer
     ],
     "lint": [
-        "black>=22.3.0,<23.0",  # auto-formatter and linter
-        "mypy>=0.961,<1.0",  # Static type analyzer
+        "black>=22.6.0,<23.0",  # auto-formatter and linter
+        "mypy>=0.971,<1.0",  # Static type analyzer
         "flake8>=4.0.1,<5.0",  # Style linter
         "isort>=5.10.1,<6.0",  # Import sorting linter
     ],
@@ -54,9 +54,9 @@ setup(
     include_package_data=True,
     install_requires=[
         "importlib-metadata ; python_version<'3.8'",
-        "eth-ape>=0.3.0,<0.4.0",
+        "eth-ape>=0.4.0,<0.5.0",
     ],
-    python_requires=">=3.7.2,<3.11",
+    python_requires=">=3.7.2,<4",
     extras_require=extras_require,
     py_modules=["ape_bsc"],
     license="Apache-2.0",
@@ -65,7 +65,7 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={"ape_bsc": ["py.typed"]},
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
         "Natural Language :: English",
