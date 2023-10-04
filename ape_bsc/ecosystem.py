@@ -5,10 +5,10 @@ from ape.api.config import PluginConfig
 from ape.api.networks import LOCAL_NETWORK_NAME
 from ape.exceptions import ApeException
 from ape.types import TransactionSignature
+from ape.utils import DEFAULT_LOCAL_TRANSACTION_ACCEPTANCE_TIMEOUT
 from ape_ethereum.ecosystem import Ethereum, NetworkConfig
 from ape_ethereum.transactions import DynamicFeeTransaction, StaticFeeTransaction, TransactionType
-from eth_typing import HexStr
-from eth_utils import add_0x_prefix, decode_hex
+from eth_utils.hexadecimal import decode_hex
 
 NETWORKS = {
     # chain_id, network_id
@@ -17,10 +17,28 @@ NETWORKS = {
 }
 
 
+def _create_network_config(
+    required_confirmations: int = 1, block_time: int = 3, **kwargs
+) -> NetworkConfig:
+    return NetworkConfig(
+        required_confirmations=required_confirmations, block_time=block_time, **kwargs
+    )
+
+
+def _create_local_config(default_provider: Optional[str] = None, **kwargs) -> NetworkConfig:
+    return _create_network_config(
+        required_confirmations=0,
+        default_provider=default_provider,
+        transaction_acceptance_timeout=DEFAULT_LOCAL_TRANSACTION_ACCEPTANCE_TIMEOUT,
+        gas_limit="max",
+        **kwargs,
+    )
+
+
 class BSCConfig(PluginConfig):
-    mainnet: NetworkConfig = NetworkConfig(required_confirmations=1, block_time=3)
-    testnet: NetworkConfig = NetworkConfig(required_confirmations=1, block_time=3)
-    local: NetworkConfig = NetworkConfig(default_provider="test")
+    mainnet: NetworkConfig = _create_network_config()
+    testnet: NetworkConfig = _create_network_config()
+    local: NetworkConfig = _create_local_config(default_provider="test")
     default_network: str = LOCAL_NETWORK_NAME
 
 
@@ -40,7 +58,7 @@ class BSC(Ethereum):
             :class:`~ape.api.transactions.TransactionAPI`
         """
 
-        transaction_type = _get_transaction_type(kwargs.get("type"))
+        transaction_type = self.get_transaction_type(kwargs.get("type"))
         kwargs["type"] = transaction_type.value
         txn_class = _get_transaction_cls(transaction_type)
 
@@ -68,23 +86,14 @@ class BSC(Ethereum):
 
         return txn_class.parse_obj(kwargs)
 
-
-def _get_transaction_type(_type: Optional[Union[int, str, bytes]]) -> TransactionType:
-    if not _type:
-        return TransactionType.STATIC
-
-    if _type is None:
-        _type = TransactionType.STATIC.value
-    elif isinstance(_type, int):
-        _type = f"0{_type}"
-    elif isinstance(_type, bytes):
-        _type = _type.hex()
-
-    suffix = _type.replace("0x", "")
-    if len(suffix) == 1:
-        _type = f"{_type.rstrip(suffix)}0{suffix}"
-
-    return TransactionType(add_0x_prefix(HexStr(_type)))
+    def get_transaction_type(self, _type: Optional[Union[int, str, bytes]]) -> TransactionType:
+        if _type is None:
+            version = TransactionType.STATIC
+        elif not isinstance(_type, int):
+            version = TransactionType(self.conversion_manager.convert(_type, int))
+        else:
+            version = TransactionType(_type)
+        return version
 
 
 class ApeBSCError(ApeException):
