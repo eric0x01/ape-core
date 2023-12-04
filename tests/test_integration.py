@@ -3,7 +3,7 @@ from ape._cli import cli as ape_cli
 from click.testing import CliRunner
 
 EXPECTED_OUTPUT = """
-bsc
+core
 ├── mainnet
 │   └── geth  (default)
 ├── testnet
@@ -44,10 +44,10 @@ def assert_rich_text(actual: str, expected: str):
         assert expected_line in actual_lines
 
 
-def test_networks(runner, cli, bsc):
+def test_networks(runner, cli, core):
     # Do this in case local env changed it.
-    bsc.mainnet.set_default_provider("geth")
-    bsc.testnet.set_default_provider("geth")
+    core.mainnet.set_default_provider("geth")
+    core.testnet.set_default_provider("geth")
 
     result = runner.invoke(cli, ["networks", "list"])
     assert_rich_text(result.output, EXPECTED_OUTPUT)

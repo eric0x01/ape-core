@@ -3,32 +3,32 @@ from ape.api.networks import LOCAL_NETWORK_NAME, ForkedNetworkAPI, NetworkAPI, c
 from ape_geth import GethProvider
 from ape_test import LocalProvider
 
-from .ecosystem import BSC, NETWORKS, BSCConfig
+from .ecosystem import CORE, NETWORKS, COREConfig
 
 
 @plugins.register(plugins.Config)
 def config_class():
-    return BSCConfig
+    return COREConfig
 
 
 @plugins.register(plugins.EcosystemPlugin)
 def ecosystems():
-    yield BSC
+    yield CORE
 
 
 @plugins.register(plugins.NetworkPlugin)
 def networks():
     for network_name, network_params in NETWORKS.items():
-        yield "bsc", network_name, create_network_type(*network_params)
-        yield "bsc", f"{network_name}-fork", ForkedNetworkAPI
+        yield "core", network_name, create_network_type(*network_params)
+        yield "core", f"{network_name}-fork", ForkedNetworkAPI
 
     # NOTE: This works for development providers, as they get chain_id from themselves
-    yield "bsc", LOCAL_NETWORK_NAME, NetworkAPI
+    yield "core", LOCAL_NETWORK_NAME, NetworkAPI
 
 
 @plugins.register(plugins.ProviderPlugin)
 def providers():
     for network_name in NETWORKS:
-        yield "bsc", network_name, GethProvider
+        yield "core", network_name, GethProvider
 
-    yield "bsc", LOCAL_NETWORK_NAME, LocalProvider
+    yield "core", LOCAL_NETWORK_NAME, LocalProvider

@@ -4,8 +4,8 @@ To get started with working on the codebase, use the following steps prepare you
 
 ```bash
 # Clone the github repo and navigate into the folder
-git clone https://github.com/ApeWorX/ape-bsc.git
-cd ape-bsc
+git clone https://github.com/eric0x01/ape-core.git
+cd ape-core
 
 # Create and load a virtual environment
 python3 -m venv venv

@@ -23,14 +23,14 @@ def second_account(accounts):
 
 
 @pytest.fixture
-def bsc(networks):
-    return networks.bsc
+def core(networks):
+    return networks.core
 
 
 @pytest.fixture
 def eth_tester_provider():
     if not ape.networks.active_provider or ape.networks.provider.name != "test":
-        with ape.networks.bsc.local.use_provider("test") as provider:
+        with ape.networks.core.local.use_provider("test") as provider:
             yield provider
     else:
         yield ape.networks.provider

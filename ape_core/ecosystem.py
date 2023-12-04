@@ -10,8 +10,9 @@ from ape_ethereum.transactions import DynamicFeeTransaction, StaticFeeTransactio
 
 NETWORKS = {
     # chain_id, network_id
-    "mainnet": (56, 56),
-    "testnet": (97, 97),
+    "mainnet": (1116, 1116),
+    "testnet": (1115, 1115),
+    "devnet": (1112, 1112),
 }
 
 
@@ -38,19 +39,21 @@ def _create_local_config(default_provider: Optional[str] = None, use_fork: bool 
     )
 
 
-class BSCConfig(PluginConfig):
+class COREConfig(PluginConfig):
     mainnet: NetworkConfig = _create_config()
     mainnet_fork: ForkedNetworkConfig = _create_local_config(use_fork=True)
     testnet: NetworkConfig = _create_config()
     testnet_fork: ForkedNetworkConfig = _create_local_config(use_fork=True)
+    devnet: NetworkConfig = _create_config()
+    devnet_fork: ForkedNetworkConfig = _create_local_config(use_fork=True)
     local: NetworkConfig = _create_local_config(default_provider="test")
     default_network: str = LOCAL_NETWORK_NAME
 
 
-class BSC(Ethereum):
+class CORE(Ethereum):
     @property
-    def config(self) -> BSCConfig:  # type: ignore[override]
-        return cast(BSCConfig, self.config_manager.get_config("bsc"))
+    def config(self) -> COREConfig:  # type: ignore[override]
+        return cast(COREConfig, self.config_manager.get_config("core"))
 
     def create_transaction(self, **kwargs) -> TransactionAPI:
         """
